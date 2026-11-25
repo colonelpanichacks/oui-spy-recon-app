@@ -36,6 +36,10 @@ On a fresh board the mesh is off. When it goes on, a Recon is the **home** and a
 
 ## Set it up
 
+### A remote node from the web flasher
+
+A **Detector**, **Sky-Spy** or **Wardriver** node needs no phone of its own. On the [web flasher](https://colonelpanichacks.github.io/oui-spy-unified-blue/), pick it and install it, then set it up on the page over the same USB cable: the mesh channel, the fleet key (the page can generate one, and shows its fingerprint), a name, and a lock so it starts in the mesh after every power cut. It joins as a remote. The board on your phone is the home: give it the same key and channel in the app (below).
+
 ### An OUI SPY joining your fleet
 
 An OUI SPY has no screen, so the app sets up its mesh.

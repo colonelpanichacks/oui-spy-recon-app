@@ -10,7 +10,7 @@
 <p align="center">
   <a href="https://github.com/colonelpanichacks/oui-spy-recon-app/releases/latest"><b>Download</b></a>
   &nbsp;&middot;&nbsp;
-  <a href="https://colonelpanichacks.github.io/oui-spy-recon-app/flasher/"><b>Flash an OUI SPY</b></a>
+  <a href="https://colonelpanichacks.github.io/oui-spy-unified-blue/"><b>Flash an OUI SPY</b></a>
   &nbsp;&middot;&nbsp;
   <a href="#features"><b>Features</b></a>
   &nbsp;&middot;&nbsp;
@@ -26,9 +26,10 @@
 ## Get started
 
 1. **Install the app.** Download it for your Android phone or your Mac from [Releases](https://github.com/colonelpanichacks/oui-spy-recon-app/releases/latest).
-2. **Flash your OUI SPY.** Open the [OUI SPY flasher](https://colonelpanichacks.github.io/oui-spy-recon-app/flasher/) in Chrome or Edge on a computer, plug the board in with a USB-C data cable, click **Connect**, pick its port, then **Install OUI SPY**. Later builds come from the app, over Bluetooth, USB or the mesh.
+2. **Flash your OUI SPY.** Open the [OUI SPY web flasher](https://colonelpanichacks.github.io/oui-spy-unified-blue/) in Chrome or Edge on a computer and keep **OUI SPY for the app** picked. Plug the board in with a USB-C data cable, click **Connect**, pick its port, then install it. Later builds come from the app, over Bluetooth, USB or the mesh.
 3. **Connect.** Open the app, go to **Settings > Connections**, switch on **Board over Bluetooth** and tap it to pick your board. The first time, it asks for the board's PIN: **123456** on a new OUI SPY (change it with `blepin` in the app's Console while the board is on USB).
 4. **Keep it current.** New firmware for your board comes with the app: install it from the app's **Firmware** page. The app looks here for its own updates, and you install one from **Settings**.
+5. **Grow a fleet (optional).** Boards you leave out on their own report to yours over the mesh: on the same flasher pick **Detector**, **Sky-Spy** or **Wardriver**, install it, and the page puts it on your fleet's mesh over the same cable. See [Remote nodes](#remote-nodes).
 
 ## Features
 
@@ -39,7 +40,7 @@
 - **Wardriving.** Log the Wi-Fi networks and Bluetooth devices you pass, with GPS (your phone's, or a Recon's own), session by session, on its own map.
 - **Device pages.** Name a device, group it, keep notes, watch it, mute its alerts, hunt it and export it. A drone's page also tags it friendly, neutral, suspicious or hostile, shows it on the map and follows it.
 - **Triangulation.** Three boards placed on the map that hear the same device put it on the map.
-- **The mesh.** Run several boards on a long-range mesh and see the whole fleet from one phone. Firmware updates travel over the mesh too.
+- **The mesh.** Run several boards on a long-range mesh and see the whole fleet from one phone. Remote nodes (Detector, Sky-Spy, Wardriver) install and join it straight from the web flasher, and firmware updates travel over the mesh too.
 - **Firmware.** The app carries the firmware for your OUI SPY boards and updates them over Bluetooth, USB or the mesh. A new board's first install is done with the web flasher.
 - **On the desktop.** The same app on macOS. Linux is coming.
 
@@ -387,6 +388,14 @@ The screens below run a fleet from one phone: every node's status, rules and fir
 
 **[The mesh, step by step](docs/MESH.md):** setting up a fleet from the app, the fleet key, running every node from one phone, what travels over the mesh, and its limits.
 
+#### Remote nodes
+
+A remote node is an OUI SPY with no phone of its own: you leave it where it should watch, and it reports over the mesh to the board on your phone. The [web flasher](https://colonelpanichacks.github.io/oui-spy-unified-blue/) installs one and puts it on your fleet's mesh over the same USB cable.
+
+1. **The board on your phone.** Install **OUI SPY for the app** and pair it. In the app, **Fleet > Board > Mesh**: type a fleet key (8 to 63 characters, no spaces) and switch the mesh on. Then make it the home: **Fleet > Control > Home node**.
+2. **Each remote node.** On the flasher, pick its job: **Detector** (watches for the device signatures you send it), **Sky-Spy** (drone Remote ID) or **Wardriver** (every Wi-Fi network and Bluetooth device it hears). Install it, then set it up on the page: the same channel and fleet key, a name, and a lock so it starts in the mesh after every power cut. The page can generate a key, and shows its fingerprint: the same one the app shows for every node holding it.
+3. **Run them all from the app.** **Fleet** lists every node. Filters and firmware updates reach them over the mesh.
+
 #### Fleet
 
 The Fleet tab: the Recon is the home of the mesh, and every OUI SPY node on it is listed with its state, its link and its build.
@@ -453,7 +462,7 @@ Triangulation on: the Axon body camera placed at its fix from the three OUI SPY 
 
 ### Firmware
 
-The app carries the firmware for your OUI SPY boards and updates them over Bluetooth, USB or the mesh, one node at a time, checking each image before it is sent. A new board's first install is done with the [web flasher](https://colonelpanichacks.github.io/oui-spy-recon-app/flasher/).
+The app carries the firmware for your OUI SPY boards and updates them over Bluetooth, USB or the mesh, one node at a time, checking each image before it is sent. A new board's first install is done with the [web flasher](https://colonelpanichacks.github.io/oui-spy-unified-blue/).
 
 #### Firmware over the mesh
 
@@ -628,6 +637,17 @@ To check the APK's signing certificate:
     apksigner verify --print-certs oui-spy-recon-<version>.apk
 
 </details>
+
+## Thanks
+
+Thanks and a shout-out to:
+
+- **DeFlock Joplin**, for the wildcard probe-request detection research.
+- **NitekryDPaul**, for the many OUI submissions: [nite-oui-collection](https://github.com/nitekry/nite-oui-collection).
+- **[WiGLE](https://wigle.net)**, the wardriving database the app uploads to.
+- **cybertiger** at the [EFF](https://www.eff.org).
+
+Shout-outs to **the wrew**, **dz_az** and **h4d35x0**.
 
 ## License
 
