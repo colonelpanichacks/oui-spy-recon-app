@@ -650,6 +650,7 @@ Thanks and a shout-out to:
 - **NitekryDPaul**, for the many OUI submissions: [nite-oui-collection](https://github.com/nitekry/nite-oui-collection).
 - **[WiGLE](https://wigle.net)**, the wardriving database the app uploads to.
 - **cybertiger** at the [EFF](https://www.eff.org).
+- **Joe "The Mayor" Helle**, for help with the Android app.
 
 Shout-outs to **the wrew**, **dz_az** and **h4d35x0**.
 
