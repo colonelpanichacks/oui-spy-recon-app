@@ -4,11 +4,14 @@
 
 <p align="center">
   <b>Drones, trackers, cameras and the radios around you, on your phone and on a map.</b><br>
-  The app for your OUI SPY boards. Android and macOS, with Linux coming.
+  The app for your OUI SPY boards. Android and macOS, with Linux coming.<br>
+  No board yet? Get an OUI SPY at <a href="https://colonelpanic.tech/#products"><b>colonelpanic.tech</b></a>.
 </p>
 
 <p align="center">
   <a href="https://github.com/colonelpanichacks/oui-spy-recon-app/releases/latest"><b>Download</b></a>
+  &nbsp;&middot;&nbsp;
+  <a href="https://colonelpanic.tech/#products"><b>Buy an OUI SPY</b></a>
   &nbsp;&middot;&nbsp;
   <a href="https://colonelpanichacks.github.io/oui-spy-recon-app/flasher/"><b>Flash an OUI SPY</b></a>
   &nbsp;&middot;&nbsp;
@@ -25,11 +28,12 @@
 
 ## Get started
 
-1. **Install the app.** Download it for your Android phone or your Mac from [Releases](https://github.com/colonelpanichacks/oui-spy-recon-app/releases/latest).
-2. **Flash your OUI SPY.** Open the [OUI SPY web flasher](https://colonelpanichacks.github.io/oui-spy-recon-app/flasher/) in Chrome or Edge on a computer and keep **OUI SPY for the app** picked. Plug the board in with a USB-C data cable, click **Connect**, pick its port, then install it. Later builds come from the app, over Bluetooth, USB or the mesh.
-3. **Connect.** Open the app, go to **Settings > Connections**, switch on **Board over Bluetooth** and tap it to pick your board. The first time, it asks for the board's PIN: **123456** on a new OUI SPY (change it with `blepin` in the app's Console while the board is on USB).
-4. **Keep it current.** New firmware for your board comes with the app: install it from the app's **Firmware** page. The app looks here for its own updates, and you install one from **Settings**.
-5. **Grow a fleet (optional).** Boards you leave out on their own report to yours over the mesh: on the same flasher pick **Detector**, **Sky-Spy** or **Wardriver**, install it, and the page puts it on your fleet's mesh over the same cable. See [Remote nodes](#remote-nodes).
+1. **Get an OUI SPY.** The boards are at [colonelpanic.tech](https://colonelpanic.tech/#products).
+2. **Install the app.** Download it for your Android phone or your Mac from [Releases](https://github.com/colonelpanichacks/oui-spy-recon-app/releases/latest).
+3. **Flash your OUI SPY.** Open the [OUI SPY web flasher](https://colonelpanichacks.github.io/oui-spy-recon-app/flasher/) in Chrome or Edge on a computer and keep **OUI SPY for the app** picked. Plug the board in with a USB-C data cable, click **Connect**, pick its port, then install it. Later builds come from the app, over Bluetooth, USB or the mesh.
+4. **Connect.** Open the app, go to **Settings > Connections**, switch on **Board over Bluetooth** and tap it to pick your board. The first time, it asks for the board's PIN: **123456** on a new OUI SPY (change it with `blepin` in the app's Console while the board is on USB).
+5. **Keep it current.** New firmware for your board comes with the app: install it from the app's **Firmware** page. The app looks here for its own updates, and you install one from **Settings**.
+6. **Grow a fleet (optional).** Boards you leave out on their own report to yours over the mesh: on the same flasher pick **Detector**, **Sky-Spy** or **Wardriver**, install it, and the page puts it on your fleet's mesh over the same cable. See [Remote nodes](#remote-nodes).
 
 ## Features
 
