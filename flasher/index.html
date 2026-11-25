@@ -4,30 +4,1306 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>OUI SPY // Web Flasher</title>
-<meta name="description" content="The OUI SPY web flasher: the OUI SPY firmware for the OUI SPY Recon app, and remote mesh nodes.">
+<meta name="description" content="Get the OUI SPY Recon app, then install the OUI SPY firmware on your OUI SPY, or make it a remote node on your fleet's mesh, from Chrome or Edge on a computer.">
 <meta name="theme-color" content="#050706">
-<link rel="canonical" href="https://colonelpanichacks.github.io/oui-spy-unified-blue/">
-<meta http-equiv="refresh" content="0; url=https://colonelpanichacks.github.io/oui-spy-unified-blue/">
-<script>
-  // one flasher for the app: the OUI SPY web flasher (a #detector, #skyspy or #wardrive link goes with it)
-  location.replace('https://colonelpanichacks.github.io/oui-spy-unified-blue/' + location.hash);
-</script>
+<link rel="icon" href="art/moon.png">
 <style>
-  html, body { margin: 0; padding: 0; background: #050706; color: #d4e5db; }
-  body {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    text-align: center;
+  :root {
+    --bg:        #050706;
+    --bg-grid:   #0b130f;
+    --panel:     rgba(6, 10, 8, 0.84);
+    --lit:       #a3ffc4;            /* the app's pale neon green */
+    --lit-rgb:   163, 255, 196;
+    --hot:       #ff3da8;            /* the app's hot pink: small touches only */
+    --hot-rgb:   255, 61, 168;
+    --text:      #d4e5db;
+    --muted:     #6f857a;
+    --title:     #e8edf3;
+    --white:     #ffffff;
+    --ink:       #04100a;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--text);
     font-family: 'IBM Plex Mono', 'JetBrains Mono', 'Courier New', ui-monospace, monospace;
     font-size: 15px;
+    line-height: 1.55;
+    min-height: 100vh;
+    text-align: center;
   }
-  a { color: #a3ffc4; }
+  body {
+    position: relative;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(var(--lit-rgb), 0.05), transparent 60%),
+      linear-gradient(var(--bg-grid) 1px, transparent 1px) 0 0 / 44px 44px,
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px) 0 0 / 44px 44px,
+      var(--bg);
+    padding: 0 16px 48px;
+  }
+  main { max-width: 780px; margin: 0 auto; position: relative; z-index: 1; }
+  a { color: var(--lit); text-decoration: none; border-bottom: 1px dotted rgba(var(--lit-rgb), 0.45); }
+  a:hover { color: var(--white); border-bottom-color: var(--white); }
+  b { color: var(--white); font-weight: normal; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* --- HEADER: the app's own, built from the board's art --- */
+  .hdr {
+    margin: 0 -16px;
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    background: var(--bg);
+    border-bottom: 1px solid rgba(var(--lit-rgb), 0.30);
+    box-shadow: 0 1px 22px rgba(var(--lit-rgb), 0.07);
+  }
+  /* The app's header geometry: the art is a 60 mm strip, the moon (4.6 mm) sits in a band
+     13.2 mm down it, the OUI SPY RECON title just above the band. */
+  .art {
+    --W:  min(100vw, 720px);
+    --tw: clamp(240px, calc(var(--W) * 0.8), 420px);
+    --tt: clamp(14px, calc(var(--W) * 0.04), 28px);
+    --th: calc(var(--tw) * 199 / 1620 + 6px);
+    --bh: clamp(46px, calc(var(--W) * 6.4 / 60), 60px);
+    --bc: calc(var(--tt) + var(--th) + var(--bh) / 2);
+    --md: calc(var(--W) * 4.6 / 60);
+    --at: calc(var(--bc) - var(--W) * 13.2 / 60);
+    --ah: calc(var(--W) * 1293 / 2640);
+    position: relative;
+    overflow: hidden;
+    width: var(--W);
+    height: calc(var(--bc) + var(--W) * 0.12);
+    margin: 0 auto;
+  }
+  .art::after {
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: calc(var(--W) * 0.06);
+    background: linear-gradient(rgba(5, 7, 6, 0), var(--bg));
+  }
+  .rings, .scene {
+    position: absolute; left: 0; top: var(--at);
+    width: 100%; height: var(--ah);
+  }
+  /* the rings: light grey at the moon, darker out to the edges */
+  .rings {
+    background: linear-gradient(90deg, #262b32 4%, #9aa1aa 50%, #262b32 96%);
+    -webkit-mask: url(art/header.png) 0 0 / 100% 100% no-repeat;
+            mask: url(art/header.png) 0 0 / 100% 100% no-repeat;
+    opacity: 0.6;
+  }
+  .moon {
+    position: absolute; left: 50%; top: var(--bc);
+    width: var(--md); height: var(--md);
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(var(--lit-rgb), 0.32), 0 0 36px rgba(var(--lit-rgb), 0.14);
+  }
+  .moon::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: rgba(var(--lit-rgb), 0.92);
+    -webkit-mask: url(art/moon.png) 0 0 / 100% 100% no-repeat;
+            mask: url(art/moon.png) 0 0 / 100% 100% no-repeat;
+  }
+  /* the ridge: dark below the ridge line (it hides the moon's foot), dots in pale green */
+  .scene .land, .scene .glow, .scene .dots { position: absolute; inset: 0; }
+  .scene .land {
+    background: var(--bg);
+    -webkit-mask: url(art/mtns-land.png) 0 0 / 100% 100% no-repeat;
+            mask: url(art/mtns-land.png) 0 0 / 100% 100% no-repeat;
+  }
+  .scene .glow { filter: drop-shadow(0 0 2px rgba(var(--lit-rgb), 0.4)); }
+  .scene .dots {
+    background: var(--lit);
+    opacity: 0.8;
+    -webkit-mask: url(art/mtns.png) 0 0 / 100% 100% no-repeat;
+            mask: url(art/mtns.png) 0 0 / 100% 100% no-repeat;
+  }
+  /* the board's dot-matrix banner: OUI SPY in white, RECON in the pale green */
+  .title {
+    position: absolute; left: 50%; top: calc(var(--tt) + 6px);
+    width: var(--tw); aspect-ratio: 1620 / 199;
+    transform: translateX(-50%);
+    background-image: linear-gradient(90deg, var(--title) 0 54.5%, var(--lit) 54.5% 100%), url(art/title.png);
+    background-size: 100% 100%, 100% 100%;
+    background-repeat: no-repeat;
+    background-blend-mode: multiply;
+    -webkit-mask: url(art/title.png) 0 0 / 100% 100% no-repeat;
+            mask: url(art/title.png) 0 0 / 100% 100% no-repeat;
+  }
+  .subtitle {
+    position: relative;
+    color: #effff4;
+    letter-spacing: 5px;
+    font-size: 12px;
+    margin: 0;
+    padding: 2px 16px 20px;
+    text-shadow: 0 0 8px rgba(var(--lit-rgb), 0.45);
+    text-wrap: balance;
+  }
+  .subtitle .sep { color: var(--lit); margin: 0 10px; opacity: 0.6; }
+  .subtitle .ver { color: var(--lit); text-shadow: 0 0 8px var(--lit); }
+  @media (min-width: 721px) {
+    /* wider than the art: the ridge fades out at its ends instead of stopping */
+    .scene {
+      -webkit-mask: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+              mask: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+    }
+  }
+
+  /* --- PANELS --- */
+  .panel {
+    border: 1px solid rgba(var(--lit-rgb), 0.22);
+    background: var(--panel);
+    margin: 24px auto;
+    max-width: 720px;
+  }
+  .panel > header {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 10px 20px;
+    background: rgba(var(--lit-rgb), 0.06);
+    border-bottom: 1px solid rgba(var(--lit-rgb), 0.22);
+    color: var(--lit);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    text-shadow: 0 0 6px rgba(var(--lit-rgb), 0.45);
+  }
+  /* the board's corner contours behind each bar, as on the app's tab bar */
+  .panel > header::before {
+    content: "";
+    position: absolute; inset: 0;
+    z-index: -1;
+    background: rgba(var(--lit-rgb), 0.16);
+    -webkit-mask: url(art/topo.png) center / cover no-repeat;
+            mask: url(art/topo.png) center / cover no-repeat;
+  }
+  .panel > header .right { color: var(--muted); font-size: 10px; letter-spacing: 2px; text-shadow: none; }
+  .panel > .body { padding: 24px 22px; }
+
+  .lead { max-width: 600px; margin: 0 auto 18px; color: var(--text); font-size: 14px; }
+
+  /* --- GET THE APP --- */
+  .getapp > .body { padding: 18px 22px; }
+  .getapp .lead { margin-bottom: 14px; }
+  /* the same outlined button as Connect below */
+  .dl {
+    display: inline-block;
+    max-width: 100%;
+    padding: 13px 28px;
+    background: var(--ink);
+    color: var(--lit);
+    border: 1px solid var(--lit);
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 14px;
+    box-shadow: 0 0 14px rgba(var(--lit-rgb), 0.28), inset 0 0 12px rgba(var(--lit-rgb), 0.08);
+    text-shadow: 0 0 6px rgba(var(--lit-rgb), 0.7);
+    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .dl:hover, .dl:focus-visible {
+    background: var(--lit);
+    color: var(--ink);
+    border-color: var(--lit);
+    text-shadow: none;
+    outline: none;
+    box-shadow: 0 0 24px rgba(var(--lit-rgb), 0.55);
+  }
+  .dl-meta { margin: 7px 0 0; color: var(--muted); font-size: 11px; letter-spacing: 1px; }
+  .dl-alt {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .dl2 {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid rgba(var(--lit-rgb), 0.5);
+    color: var(--lit);
+    background: rgba(var(--lit-rgb), 0.04);
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-shadow: 0 0 6px rgba(var(--lit-rgb), 0.45);
+  }
+  .dl2:hover, .dl2:focus-visible { color: var(--ink); background: var(--lit); border-color: var(--lit); text-shadow: none; outline: none; }
+  .dl2 .meta { font-size: 11px; letter-spacing: 0.5px; text-transform: none; opacity: 0.7; }
+  .dl-note { margin: 12px auto 0; color: var(--muted); font-size: 13px; max-width: 520px; }
+
+  /* --- THE BOARD'S ANIMALS --- */
+  .frieze {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(10px, 3.2vw, 26px);
+    margin: 30px auto;
+    filter: drop-shadow(0 0 5px rgba(var(--lit-rgb), 0.45));
+  }
+  .frieze i {
+    display: block;
+    width: clamp(22px, 7vw, 34px);
+    aspect-ratio: 1;
+    background: var(--lit);
+    opacity: 0.62;
+    -webkit-mask: var(--m) center / contain no-repeat;
+            mask: var(--m) center / contain no-repeat;
+  }
+  .frieze .marmot   { --m: url(art/marker-marmot.png); }
+  .frieze .spider   { --m: url(art/marker-spider.png); }
+  .frieze .squirrel { --m: url(art/marker-squirrel.png); }
+  .frieze .raccoon  { --m: url(art/marker-raccoon.png); }
+  .frieze .jar      { --m: url(art/marker-jar.png); }
+  .frieze .crow     { --m: url(art/marker-crow.png); }
+  .frieze .bear     { --m: url(art/marker-bear.png); }
+  .frieze .hawk     { --m: url(art/marker-hawk.png); }
+  .frieze .mavic    { --m: url(art/marker-mavic.png); }
+
+  /* --- WHAT YOU NEED --- */
+  .needs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 660px;
+    margin: 0 auto 8px;
+    text-align: left;
+  }
+  .need {
+    border: 1px solid rgba(var(--lit-rgb), 0.22);
+    background: rgba(var(--lit-rgb), 0.03);
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+  .need .ph {
+    display: block;
+    color: var(--lit);
+    letter-spacing: 2px;
+    font-size: 11px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    text-shadow: 0 0 6px rgba(var(--lit-rgb), 0.5);
+  }
+  .need h4 { margin: 0 0 4px; color: var(--white); font-weight: 500; font-size: 14px; letter-spacing: 1px; }
+  .need p { margin: 0; color: var(--muted); }
+
+  /* --- STEPS --- */
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 0;
+    border-bottom: 1px dashed rgba(var(--lit-rgb), 0.12);
+  }
+  .step:first-child { padding-top: 4px; }
+  .step:last-child { border-bottom: none; padding-bottom: 4px; }
+  .needs + .step { padding-top: 22px; }
+  .step .n {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; height: 40px;
+    border: 1px solid var(--lit);
+    color: var(--lit);
+    font-size: 18px;
+    font-weight: 700;
+    background: rgba(var(--lit-rgb), 0.04);
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(var(--lit-rgb), 0.22);
+    text-shadow: 0 0 6px rgba(var(--lit-rgb), 0.6);
+  }
+  .step h3 {
+    margin: 4px 0 0;
+    color: var(--white);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .step p {
+    margin: 0;
+    color: var(--text);
+    font-size: 14px;
+    max-width: 540px;
+  }
+  .step p.hint { color: var(--muted); font-size: 13px; }
+
+  .kbd {
+    display: inline-block;
+    padding: 0 8px;
+    border: 1px solid var(--lit);
+    color: var(--white);
+    background: rgba(var(--lit-rgb), 0.05);
+    font-size: 12px;
+    letter-spacing: 1px;
+    line-height: 1.6;
+  }
+
+  /* --- INSTALL BUTTON --- */
+  esp-web-install-button { display: inline-block; margin-top: 12px; }
+  esp-web-install-button button[slot=activate] {
+    background: var(--ink);
+    color: var(--lit);
+    border: 1px solid var(--lit);
+    padding: 13px 28px;
+    font-family: inherit;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 0 14px rgba(var(--lit-rgb), 0.28), inset 0 0 12px rgba(var(--lit-rgb), 0.08);
+    text-shadow: 0 0 6px rgba(var(--lit-rgb), 0.7);
+    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  }
+  esp-web-install-button button[slot=activate]:hover,
+  esp-web-install-button button[slot=activate]:focus-visible {
+    background: var(--lit);
+    color: var(--ink);
+    text-shadow: none;
+    outline: none;
+    box-shadow: 0 0 24px rgba(var(--lit-rgb), 0.55);
+  }
+  /* until the installer has loaded, show the button only */
+  esp-web-install-button:not(:defined) > [slot=unsupported],
+  esp-web-install-button:not(:defined) > [slot=not-allowed] { display: none; }
+  .unsupported, .not-allowed {
+    color: var(--hot);
+    padding: 10px 14px;
+    border: 1px dashed var(--hot);
+    display: inline-block;
+    font-size: 13px;
+    max-width: 520px;
+  }
+  /* the installer's own dialog, in the same dark */
+  ewt-install-dialog {
+    --roboto-font: 'IBM Plex Mono', 'JetBrains Mono', 'Courier New', ui-monospace, monospace;
+    --text-color: rgba(212, 229, 219, 0.78);
+    --danger-color: #ff3da8;
+    --md-sys-color-primary: #a3ffc4;
+    --md-sys-color-on-primary: #04100a;
+    --md-sys-color-surface: #0a0f0c;
+    --md-sys-color-surface-container: #0a0f0c;
+    --md-sys-color-surface-container-high: #0a0f0c;
+    --md-sys-color-surface-container-highest: #16211b;
+    --md-sys-color-secondary-container: #1b2a21;
+    --md-sys-color-on-surface: #e8f3ec;
+    --md-sys-color-on-surface-variant: #a6b9ad;
+    --md-sys-color-outline: #4d6155;
+    --md-sys-color-outline-variant: #26342c;
+    --md-sys-color-scrim: #000000;
+  }
+
+  /* --- WHAT IT WILL BE: the firmware picker --- */
+  .pick {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    max-width: 760px;
+    margin: 18px auto 6px;
+    text-align: left;
+  }
+  .pick .opt {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border: 1px solid rgba(var(--lit-rgb), 0.22);
+    background: rgba(var(--lit-rgb), 0.03);
+    padding: 12px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+  .pick .opt:hover { border-color: rgba(var(--lit-rgb), 0.55); }
+  .pick .opt input { position: absolute; opacity: 0; pointer-events: none; }
+  .pick .opt .ph { color: var(--muted); letter-spacing: 2px; font-size: 10.5px; text-transform: uppercase; }
+  .pick .opt b { color: var(--white); font-size: 14px; letter-spacing: 1px; font-weight: 500; }
+  .pick .opt .what { color: var(--muted); }
+  .pick .opt .ver { margin-top: auto; padding-top: 4px; color: var(--muted); font-size: 11px; letter-spacing: 1px; }
+  .pick .opt.on {
+    border-color: var(--lit);
+    background: rgba(var(--lit-rgb), 0.07);
+    box-shadow: 0 0 14px rgba(var(--lit-rgb), 0.22);
+  }
+  .pick .opt.on .ph { color: var(--lit); text-shadow: 0 0 6px rgba(var(--lit-rgb), 0.5); }
+  .pick .opt:has(input:focus-visible) { outline: 1px solid var(--white); outline-offset: 2px; }
+  .pick-note { margin: 8px auto 0; color: var(--muted); font-size: 13px; max-width: 600px; }
+  .fleet-how {
+    max-width: 640px;
+    margin: 12px auto 4px;
+    text-align: left;
+    border: 1px dashed rgba(var(--lit-rgb), 0.25);
+    padding: 8px 14px;
+    font-size: 13.5px;
+  }
+  .fleet-how summary { cursor: pointer; color: var(--lit); letter-spacing: 2px; font-size: 11.5px; text-transform: uppercase; }
+  .fleet-how ol { margin: 8px 0 2px; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+  .fleet-how li::marker { color: var(--lit); }
+  @media (max-width: 700px) { .pick { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 380px) { .pick { grid-template-columns: 1fr; } }
+
+  /* --- A REMOTE NODE'S MESH --- */
+  .mesh {
+    width: 100%;
+    max-width: 560px;
+    margin: 6px auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+  }
+  .mesh .field { display: flex; flex-direction: column; gap: 5px; }
+  .mesh .field > span { color: var(--lit); letter-spacing: 2px; font-size: 11px; text-transform: uppercase; }
+  .mesh input[type=text], .mesh select {
+    width: 100%;
+    background: var(--ink);
+    color: var(--white);
+    border: 1px solid rgba(var(--lit-rgb), 0.35);
+    border-radius: 0;
+    padding: 9px 10px;
+    font-family: inherit;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+  }
+  .mesh input[type=text]:focus, .mesh select:focus { outline: none; border-color: var(--lit); box-shadow: 0 0 10px rgba(var(--lit-rgb), 0.25); }
+  .mesh .row { display: flex; gap: 8px; }
+  .mesh .row input { flex: 1; min-width: 0; }
+  .mesh .small {
+    background: transparent;
+    color: var(--lit);
+    border: 1px solid rgba(var(--lit-rgb), 0.5);
+    padding: 0 12px;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .mesh .small:hover:not(:disabled), .mesh .small:focus-visible { background: var(--lit); color: var(--ink); outline: none; }
+  .mesh .small:disabled { opacity: 0.4; cursor: default; }
+  .mesh .note { margin: 0; color: var(--muted); font-size: 12.5px; }
+  .mesh .checks { display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; }
+  .mesh .checks label { display: flex; gap: 8px; align-items: baseline; cursor: pointer; }
+  .mesh .checks input { accent-color: var(--lit); }
+  .go {
+    align-self: center;
+    margin-top: 6px;
+    background: var(--ink);
+    color: var(--lit);
+    border: 1px solid var(--lit);
+    padding: 13px 28px;
+    font-family: inherit;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 0 14px rgba(var(--lit-rgb), 0.28), inset 0 0 12px rgba(var(--lit-rgb), 0.08);
+    text-shadow: 0 0 6px rgba(var(--lit-rgb), 0.7);
+    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .go:hover:not(:disabled), .go:focus-visible {
+    background: var(--lit);
+    color: var(--ink);
+    text-shadow: none;
+    outline: none;
+    box-shadow: 0 0 24px rgba(var(--lit-rgb), 0.55);
+  }
+  .go:disabled { opacity: 0.5; cursor: default; }
+  .meshstat { display: none; padding: 10px 14px; font-size: 13.5px; border: 1px dashed; }
+  .meshstat.show { display: block; }
+  .meshstat.busy { color: var(--text); border-color: rgba(var(--lit-rgb), 0.35); }
+  .meshstat.ok { color: var(--lit); border-color: var(--lit); }
+  .meshstat.warn, .meshstat.err { color: var(--hot); border-color: var(--hot); }
+  .meshlog summary { cursor: pointer; color: var(--muted); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; }
+  .meshlog pre {
+    max-height: 220px;
+    overflow: auto;
+    margin: 8px 0 0;
+    padding: 10px;
+    background: var(--ink);
+    border: 1px solid rgba(var(--lit-rgb), 0.18);
+    color: var(--muted);
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  /* --- THANKS --- */
+  .thanks-list {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 560px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+  }
+  .thanks-list li { padding-left: 18px; position: relative; }
+  .thanks-list li::before { content: "//"; position: absolute; left: 0; color: var(--lit); opacity: 0.7; font-size: 12px; top: 1px; }
+  .shouts { margin: 16px auto 0; max-width: 560px; color: var(--text); font-size: 14px; }
+
+  /* --- TROUBLE --- */
+  .trouble .n {
+    border-color: var(--hot);
+    color: var(--hot);
+    background: rgba(var(--hot-rgb), 0.05);
+    box-shadow: 0 0 12px rgba(var(--hot-rgb), 0.2);
+    text-shadow: 0 0 6px rgba(var(--hot-rgb), 0.6);
+  }
+
+  /* --- RECON TEASER --- */
+  .tag {
+    display: inline-block;
+    color: var(--lit);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+    padding: 2px 12px;
+    border: 1px solid var(--lit);
+    background: rgba(var(--lit-rgb), 0.04);
+    box-shadow: 0 0 10px rgba(var(--lit-rgb), 0.18);
+    text-shadow: 0 0 6px rgba(var(--lit-rgb), 0.6);
+    margin-bottom: 10px;
+  }
+  .recon h3 {
+    margin: 6px 0 6px;
+    color: var(--white);
+    font-size: 16px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .recon p { margin: 0 auto; max-width: 560px; color: var(--text); font-size: 14px; }
+  .recon-shot {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin: -10px auto 2px;
+    filter: brightness(0.9) contrast(1.06);
+    -webkit-mask-image: radial-gradient(ellipse 50% 50% at 46% 53%, #000 55%, transparent 100%);
+            mask-image: radial-gradient(ellipse 50% 50% at 46% 53%, #000 55%, transparent 100%);
+  }
+  .nw { white-space: nowrap; }
+
+  .fineprint { margin: 28px auto 0; max-width: 560px; font-size: 11px; color: var(--text); opacity: 0.6; }
+
+  footer {
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 3px;
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px dashed rgba(var(--lit-rgb), 0.12);
+  }
+
+  /* desktop: the board's contours run down both sides */
+  @media (min-width: 1180px) {
+    body::before, body::after {
+      content: "";
+      position: absolute; top: 0; bottom: 0;
+      width: 94px;
+      background: rgba(var(--lit-rgb), 0.10);
+      -webkit-mask: url(art/topo-rail.png) 0 0 / 100% auto repeat-y;
+              mask: url(art/topo-rail.png) 0 0 / 100% auto repeat-y;
+      pointer-events: none;
+    }
+    body::before { left: 0; }
+    body::after { right: 0; transform: scaleX(-1); }
+  }
+
+  @media (max-width: 620px) {
+    .needs { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .subtitle { letter-spacing: 3px; font-size: 11px; }
+    .subtitle .sep { margin: 0 6px; }
+    .subtitle .sep.last { display: none; }
+    .subtitle .ver { display: block; margin-top: 2px; }
+    .panel > .body { padding: 20px 16px; }
+    .getapp > .body { padding: 16px; }
+    .panel > header { padding: 10px 14px; letter-spacing: 3px; }
+    .dl { padding: 12px 20px; letter-spacing: 2px; }
+    esp-web-install-button button[slot=activate], .go { padding: 12px 20px; letter-spacing: 2px; }
+    footer { letter-spacing: 1px; }
+  }
+  @media (max-width: 360px) {
+    .dl { letter-spacing: 1px; }
+  }
 </style>
 </head>
 <body>
-  <p>The OUI SPY web flasher is at <a href="https://colonelpanichacks.github.io/oui-spy-unified-blue/">colonelpanichacks.github.io/oui-spy-unified-blue</a>.</p>
+<header class="hdr">
+  <h1 class="vh">OUI SPY web flasher</h1>
+  <div class="art" aria-hidden="true">
+    <div class="rings"></div>
+    <div class="moon"></div>
+    <div class="scene"><div class="land"></div><div class="glow"><div class="dots"></div></div></div>
+    <div class="title"></div>
+  </div>
+  <div class="subtitle"><span class="nw">OUI SPY FIRMWARE</span><wbr><span class="sep">//</span><wbr><span class="nw">WEB FLASHER</span><span class="sep last">//</span><span class="ver">BUILD NOV 24 2026</span></div>
+</header>
+
+<main>
+
+<section class="panel getapp">
+  <header><span>Get the app</span><span class="right">OUI SPY Recon</span></header>
+  <div class="body">
+    <p class="lead">The <b>OUI SPY Recon</b> app is your OUI SPY's screen. Get it first.</p>
+    <a class="dl" id="dl-apk" href="https://github.com/colonelpanichacks/oui-spy-recon-app/releases/latest">Download for Android (APK)</a>
+    <p class="dl-meta" id="dl-apk-meta">latest release</p>
+    <div class="dl-alt">
+      <a class="dl2" id="dl-mac" href="https://github.com/colonelpanichacks/oui-spy-recon-app/releases/latest">macOS <span class="meta" id="dl-mac-meta">zip</span></a>
+    </div>
+    <p class="dl-note">Android 9 or newer. The app updates itself from GitHub after that.</p>
+  </div>
+</section>
+
+<div class="frieze" aria-hidden="true">
+  <i class="marmot"></i><i class="spider"></i><i class="squirrel"></i><i class="raccoon"></i><i class="jar"></i><i class="crow"></i><i class="bear"></i><i class="hawk"></i><i class="mavic"></i>
+</div>
+
+<section class="panel">
+  <header><span>Flash your OUI SPY</span><span class="right">3 steps</span></header>
+  <div class="body">
+
+    <p class="lead">Pick what this OUI SPY will be, then install it over USB. You need:</p>
+
+    <div class="needs">
+      <div class="need">
+        <span class="ph">01 &middot; Board</span>
+        <h4>An OUI SPY</h4>
+        <p>The XIAO ESP32-S3 board.</p>
+      </div>
+      <div class="need">
+        <span class="ph">02 &middot; Cable</span>
+        <h4>A USB-C data cable</h4>
+        <p>Charge-only cables show no port.</p>
+      </div>
+      <div class="need">
+        <span class="ph">03 &middot; Browser</span>
+        <h4>Chrome or Edge</h4>
+        <p>On Windows, macOS or Linux. Phones can't install.</p>
+      </div>
+    </div>
+
+    <div class="pick" role="radiogroup" aria-label="What this OUI SPY will be">
+      <label class="opt on">
+        <input type="radio" name="fw" value="app" checked>
+        <span class="ph">On your phone</span>
+        <b>OUI SPY for the app</b>
+        <span class="what">Every mode, switched from the app, which is its screen. It can be your fleet's home.</span>
+        <span class="ver">build Nov 24 2026</span>
+      </label>
+      <label class="opt">
+        <input type="radio" name="fw" value="detector">
+        <span class="ph">Remote node</span>
+        <b>Detector</b>
+        <span class="what">Watches for the device signatures you give it and reports every hit over the mesh.</span>
+        <span class="ver">build Nov 5 2026</span>
+      </label>
+      <label class="opt">
+        <input type="radio" name="fw" value="skyspy">
+        <span class="ph">Remote node</span>
+        <b>Sky-Spy</b>
+        <span class="what">Drone Remote ID: every drone it hears and its pilot, over the mesh.</span>
+        <span class="ver">build Nov 17 2026</span>
+      </label>
+      <label class="opt">
+        <input type="radio" name="fw" value="wardrive">
+        <span class="ph">Remote node</span>
+        <b>Wardriver</b>
+        <span class="what">Logs every Wi-Fi network and Bluetooth device it hears and shares them over the mesh.</span>
+        <span class="ver">build Nov 5 2026</span>
+      </label>
+    </div>
+    <p class="pick-note">A remote node needs no phone: it reports over your fleet's long-range mesh to the board on your phone, and the app runs the whole fleet.</p>
+    <details class="fleet-how" open>
+      <summary>A fleet in three steps</summary>
+      <ol>
+        <li><b>The board on your phone.</b> Install <b>OUI SPY for the app</b> and pair it. In the app, <b>Fleet &gt; Board &gt; Mesh</b>: type a fleet key (any 8 to 63 characters, no spaces) and switch the mesh on. Then make it the home: <b>Fleet &gt; Control &gt; Home node</b>.</li>
+        <li><b>Every other board.</b> Pick its job here (<b>Detector</b>, <b>Sky-Spy</b> or <b>Wardriver</b>), install it, and set it up on the same channel with the same fleet key.</li>
+        <li><b>Run them all from the app.</b> <b>Fleet</b> lists every node. Filters and firmware updates reach them over the mesh.</li>
+      </ol>
+    </details>
+
+    <div class="step">
+      <div class="n">1</div>
+      <h3>Plug it in</h3>
+      <p>Plug the OUI SPY into your computer with a USB-C <b>data</b> cable.</p>
+    </div>
+
+    <div class="step">
+      <div class="n">2</div>
+      <h3>Connect</h3>
+      <p>Click Connect and pick the OUI SPY's port in the list. It usually reads <b>USB JTAG/serial debug unit</b>.</p>
+      <esp-web-install-button manifest="./manifest.json">
+        <button slot="activate">&gt;&gt; CONNECT &lt;&lt;</button>
+        <span slot="unsupported" class="unsupported">This browser can't install firmware. Open this page in Chrome or Edge on a computer.</span>
+        <span slot="not-allowed" class="not-allowed">The installer only runs on a secure (HTTPS) page.</span>
+      </esp-web-install-button>
+      <p class="hint">No port in the list? Unplug the OUI SPY, hold <span class="kbd">BOOT</span> while you plug it back in, let go, and click Connect again.</p>
+    </div>
+
+    <div class="step">
+      <div class="n">3</div>
+      <h3>Install</h3>
+      <p>Choose <b>Install <span data-fw-install>OUI SPY</span></b>. On a first install tick <b>Erase device</b>, then click <b>Install</b>. Leave it plugged in until it says <b>Installation complete</b>, about a minute.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="panel" id="after-node" hidden>
+  <header><span>Set up the remote node</span><span class="right">same cable</span></header>
+  <div class="body">
+
+    <p class="lead">Right after the install, this puts the <b data-fw-name>remote node</b> on your fleet's mesh over the same USB cable: its channel, the fleet key and its name.</p>
+
+    <div class="step">
+      <div class="n">4</div>
+      <h3>Close the installer</h3>
+      <p>Close the install dialog so the port is free. Leave the node plugged in.</p>
+    </div>
+
+    <div class="step">
+      <div class="n">5</div>
+      <h3>Put it on the mesh</h3>
+      <form class="mesh" id="meshForm" onsubmit="return false">
+        <label class="field"><span>Mesh channel</span>
+          <select id="meshCh"></select>
+        </label>
+        <p class="note">The channel your fleet is on. The app shows it under <b>Fleet &gt; Mesh</b>.</p>
+        <label class="field"><span>Fleet key</span>
+          <span class="row">
+            <input type="text" id="meshKey" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="63" placeholder="8 to 63 characters, no spaces">
+            <button type="button" class="small" id="keyGen">Generate</button>
+            <button type="button" class="small" id="keyCopy" disabled>Copy</button>
+          </span>
+        </label>
+        <p class="note" id="keyFp">Every node in the fleet needs this exact key, the board on your phone too (in the app: <b>Fleet &gt; Board &gt; Mesh &gt; Fleet key</b>). The app shows each node's key fingerprint, and this page shows the same fingerprint for the same key. The key goes only from this page to the node, over USB.</p>
+        <label class="field"><span>Node name (optional)</span>
+          <input type="text" id="meshAlias" maxlength="32" autocomplete="off" spellcheck="false" placeholder="e.g. Back gate">
+        </label>
+        <div class="checks">
+          <label><input type="checkbox" id="optBuzzer" checked> <span>Buzzer on</span></label>
+          <label><input type="checkbox" id="optLed" checked> <span>LED on</span></label>
+          <label><input type="checkbox" id="optLock" checked> <span>Lock: start in the mesh after every power cut. To unlock, hold <span class="kbd">BOOT</span> 1.5 s while powering it on.</span></label>
+        </div>
+        <button type="button" class="go" id="meshGo">&gt;&gt; Set up remote node &lt;&lt;</button>
+        <div class="meshstat" id="meshStat" role="status" aria-live="polite"></div>
+        <details class="meshlog"><summary>Serial log</summary><pre id="meshLog"></pre></details>
+      </form>
+      <p class="unsupported" id="meshUnsupported" hidden>Setting up a node needs Web Serial: open this page in Chrome or Edge on a computer.</p>
+    </div>
+
+    <div class="step">
+      <div class="n">6</div>
+      <h3>Run it from the app</h3>
+      <p>Unplug it and put it where it should watch. The board on your phone, as the fleet's home (<b>Fleet &gt; Control &gt; Home node</b>), lists it under <b>Fleet</b> once it hears it: its detections on the map, filters sent to it, and its firmware updated over the mesh (<b>Fleet &gt; Firmware</b>). USB is only for this first install.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="panel" id="after-app">
+  <header><span>After install</span><span class="right">the app</span></header>
+  <div class="body">
+
+    <div class="step">
+      <div class="n">4</div>
+      <h3>Pair it in the app</h3>
+      <p>Unplug the OUI SPY and power it again, from the computer or any USB charger. Open the <b>OUI SPY Recon</b> app and pair the OUI SPY over Bluetooth.</p>
+    </div>
+
+    <div class="step">
+      <div class="n">5</div>
+      <h3>Updates come over the air</h3>
+      <p>Later firmware updates come from the app, over the air. USB is only for this first install.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="panel">
+  <header><span>Troubleshooting</span><span class="right">common snags</span></header>
+  <div class="body trouble">
+
+    <div class="step">
+      <div class="n">?</div>
+      <h3>No port in the list</h3>
+      <p>Try another cable: charge-only cables show no port. Then unplug the OUI SPY, hold <span class="kbd">BOOT</span> while you plug it back in, let go, and click Connect again.</p>
+    </div>
+
+    <div class="step">
+      <div class="n">?</div>
+      <h3>On Linux</h3>
+      <p>If Connect lists no port or the port won't open, add your user to the <b>dialout</b> group (<b>uucp</b> on Arch), then log out and back in.</p>
+    </div>
+
+    <div class="step">
+      <div class="n">?</div>
+      <h3>The install stopped partway</h3>
+      <p>Hold <span class="kbd">BOOT</span> while you plug the OUI SPY back in, then install again with <b>Erase device</b> ticked.</p>
+    </div>
+
+    <div class="step">
+      <div class="n">?</div>
+      <h3>The app can't find it</h3>
+      <p>Unplug it and plug it back in so it starts the new firmware, and keep it near your phone or computer.</p>
+    </div>
+
+    <div class="step">
+      <div class="n">?</div>
+      <h3>The remote node won't take its setup</h3>
+      <p>Close the install dialog first: the port has to be free. A Sky-Spy or a locked node already on a mesh starts straight in the mesh and takes no setup: hold <span class="kbd">BOOT</span> 1.5 s while you power it on, or install it again with <b>Erase device</b> ticked, then set it up again.</p>
+    </div>
+
+    <div class="step">
+      <div class="n">?</div>
+      <h3>A remote node doesn't show up in the app</h3>
+      <p>It needs the same channel and the same fleet key as the board on your phone: the fingerprints in <b>Fleet</b> must match. The board on your phone must be the fleet's home (<b>Fleet &gt; Control &gt; Home node</b>).</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="panel recon">
+  <header><span>OUI SPY Recon</span><span class="right">coming</span></header>
+  <div class="body">
+    <img class="recon-shot" src="art/recon.jpg" alt="The OUI SPY Recon in its clear case" width="1200" height="826" loading="lazy">
+    <span class="tag">[ COMING ]</span>
+    <h3>OUI SPY Recon</h3>
+    <p>The OUI SPY Recon adds a screen, a second radio chip for <span class="nw">5 GHz Wi-Fi</span>, 802.15.4 and <span class="nw">5.8 GHz</span> FPV video, and Grove sensors. It is also the home of the mesh.</p>
+  </div>
+</section>
+
+<section class="panel thanks">
+  <header><span>Thanks</span><span class="right">shout-outs</span></header>
+  <div class="body">
+    <ul class="thanks-list">
+      <li><b>DeFlock Joplin</b>, for the wildcard probe-request detection research.</li>
+      <li><b>NitekryDPaul</b>, for the many OUI submissions: <a href="https://github.com/nitekry/nite-oui-collection">nite-oui-collection</a>.</li>
+      <li><a href="https://wigle.net">WiGLE</a>, the wardriving database the app uploads to.</li>
+      <li><b>cybertiger</b> at the <a href="https://www.eff.org">EFF</a>.</li>
+    </ul>
+    <p class="shouts">Shout-outs to <b>the wrew</b>, <b>dz_az</b> and <b>h4d35x0</b>.</p>
+  </div>
+</section>
+
+<p class="fineprint">For research purposes only. Use at your own risk: you assume all responsibility for how you use it, and the authors accept no liability. Provided as is, with no warranty. Follow your local laws, and don't do anything illegal or stupid.</p>
+
+<footer>
+  App &middot; <a href="https://github.com/colonelpanichacks/oui-spy-recon-app">github.com/colonelpanichacks/<wbr><span class="nw">oui-spy-recon-app</span></a>
+</footer>
+
+</main>
+
+<script>
+  // Point the download buttons straight at the latest release's files. Without an answer
+  // (no release yet, rate limited, offline) they stay on the releases page.
+  (function () {
+    var repo = 'colonelpanichacks/oui-spy-recon-app';
+    var files = 'https://github.com/' + repo + '/releases/download/';
+    var wanted = [
+      { id: 'dl-apk', end: '.apk' },
+      { id: 'dl-mac', end: '-macos.zip' }
+    ];
+    function size(bytes) {
+      return bytes >= 1048576 ? (bytes / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(bytes / 1024)) + ' KB';
+    }
+    function version(name, end, tag) {
+      var m = name.slice(0, -end.length).match(/(\d+\.\d+\.\d+)$/);
+      return m ? m[1] : String(tag || '').replace(/^\D+/, '');
+    }
+    if (!window.fetch) return;
+    fetch('https://api.github.com/repos/' + repo + '/releases/latest')
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (rel) {
+        var assets = (rel && Array.isArray(rel.assets)) ? rel.assets : [];
+        wanted.forEach(function (w) {
+          var a = assets.filter(function (x) {
+            return x && typeof x.name === 'string' && x.name.slice(-w.end.length) === w.end &&
+                   typeof x.browser_download_url === 'string' && x.browser_download_url.indexOf(files) === 0;
+          })[0];
+          var link = document.getElementById(w.id);
+          if (!a || !link) return;
+          link.href = a.browser_download_url;
+          var meta = document.getElementById(w.id + '-meta'), v = version(a.name, w.end, rel.tag_name);
+          if (meta && typeof a.size === 'number') meta.textContent = (v ? 'v' + v + ' \u00b7 ' : '') + size(a.size);
+        });
+      })
+      .catch(function () {});
+  })();
+</script>
+
+<script>
+  // What this OUI SPY will be: the app's firmware, or a remote node (Detector, Sky-Spy,
+  // Wardriver). The install button takes that build's manifest, and the panel after it says
+  // what comes next for it. #detector, #skyspy and #wardrive (or #remote) open on a node.
+  (function () {
+    var builds = {
+      app:      { manifest: './manifest.json',      install: 'OUI SPY',          name: 'OUI SPY' },
+      detector: { manifest: './node-detector.json', install: 'OUI SPY remote node: Detector',  name: 'Detector' },
+      skyspy:   { manifest: './node-skyspy.json',   install: 'OUI SPY remote node: Sky-Spy',   name: 'Sky-Spy' },
+      wardrive: { manifest: './node-wardrive.json', install: 'OUI SPY remote node: Wardriver', name: 'Wardriver' }
+    };
+    var btn = document.querySelector('esp-web-install-button');
+    var opts = Array.prototype.slice.call(document.querySelectorAll('.pick input[name=fw]'));
+    function pick(v) {
+      if (!builds[v]) v = 'app';
+      var b = builds[v], node = v !== 'app';
+      opts.forEach(function (o) {
+        o.checked = o.value === v;
+        o.parentNode.classList.toggle('on', o.checked);
+      });
+      btn.setAttribute('manifest', b.manifest);
+      document.getElementById('after-app').hidden = node;
+      document.getElementById('after-node').hidden = !node;
+      Array.prototype.forEach.call(document.querySelectorAll('[data-fw-install]'), function (e) { e.textContent = b.install; });
+      Array.prototype.forEach.call(document.querySelectorAll('[data-fw-name]'), function (e) { e.textContent = b.name; });
+      document.body.setAttribute('data-fw', v);
+    }
+    opts.forEach(function (o) {
+      o.addEventListener('change', function () {
+        pick(o.value);
+        if (window.history && history.replaceState) history.replaceState(null, '', o.value === 'app' ? location.pathname : '#' + o.value);
+      });
+    });
+    var h = location.hash.slice(1);
+    pick(h === 'remote' ? 'detector' : h);
+  })();
+</script>
+
+<script>
+  // A remote node onto the fleet's mesh over Web Serial, through the node firmware's USB console
+  // (the Detector, Sky-Spy and Wardriver builds share it):
+  //   status                         -> RST {json} (mode, role, ch, kfp, filters, alias, fw, locked)
+  //   mesh 1 remote <ch>             -> OK mesh on ...   (in setup mode; a wardriver any time)
+  //   meshkey - / meshkey <key>      -> OK fleet key ...  (saves the mesh settings too)
+  //   audio <buzzer> <led>           -> OK audio ...
+  //   nodealias <name>               -> OK nodealias ...
+  //   burnin | provisiondone         -> OK ...  (locked: starts in the mesh after every power cut)
+  // Always a remote: the fleet's home is the board on the phone, set in the app. No filters are
+  // sent: the app sends them over the mesh. The port is opened with the browser's default signals
+  // and DTR/RTS are never touched on their own (the XIAO S3 resets on them). The key goes only
+  // over USB to the node, and the log masks it.
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var ALNUM = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var enc = new TextEncoder();
+
+    if (!('serial' in navigator)) {
+      $('meshForm').hidden = true;
+      $('meshUnsupported').hidden = false;
+      return;
+    }
+
+    for (var c = 1; c <= 11; c++) {
+      var o = document.createElement('option');
+      o.value = c;
+      o.textContent = 'Channel ' + c;
+      if (c === 6) o.selected = true;
+      $('meshCh').appendChild(o);
+    }
+
+    // 32 letters and digits, every one equally likely (rejection sampling)
+    function genKey(n) {
+      var out = [], buf = new Uint8Array(64);
+      while (out.length < n) {
+        crypto.getRandomValues(buf);
+        for (var i = 0; i < buf.length; i++) if (buf[i] < 248 && out.length < n) out.push(ALNUM[buf[i] % 62]);
+      }
+      return out.join('');
+    }
+    function keyProblem(k) {
+      if (!k) return 'Type or generate the fleet key first.';
+      if (k.length < 8 || k.length > 63) return 'The key must be 8 to 63 characters.';
+      if (!/^[\x21-\x7e]+$/.test(k)) return 'The key may only use printable ASCII characters, no spaces.';
+      return '';
+    }
+    // printable ASCII without quotes or backslashes: it goes back out in the node's JSON status
+    function aliasProblem(a) {
+      if (a.length > 32) return 'The name can be at most 32 characters.';
+      if (a && !/^[\x20-\x7e]+$/.test(a)) return 'The name may only use plain ASCII letters, digits, spaces and punctuation.';
+      if (/["\\]/.test(a)) return "The name can't contain quotes or backslashes.";
+      return '';
+    }
+    // the fingerprint every OUI SPY firmware and the app show: SHA-256("OUISPY-KEY-FP" | key), first 4 bytes
+    function fingerprint(k) {
+      return crypto.subtle.digest('SHA-256', enc.encode('OUISPY-KEY-FP' + k)).then(function (d) {
+        return Array.prototype.map.call(new Uint8Array(d).slice(0, 4), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('').toUpperCase();
+      });
+    }
+    function fpText(fp) { return fp.slice(0, 4) + '-' + fp.slice(4); }
+    function esc(s) { return String(s).replace(/[<>&"]/g, function (ch) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[ch]; }); }
+
+    var fpHint = $('keyFp').innerHTML;
+    function keyChanged() {
+      var k = $('meshKey').value.trim();
+      $('keyCopy').disabled = !k;
+      if (!k) { $('keyFp').innerHTML = fpHint; return; }
+      var bad = keyProblem(k);
+      if (bad) { $('keyFp').innerHTML = '<span style="color:var(--hot)">' + bad + '</span>'; return; }
+      fingerprint(k).then(function (fp) {
+        if ($('meshKey').value.trim() !== k) return;
+        $('keyFp').innerHTML = 'Fingerprint <b>' + fpText(fp) + '</b>: the app shows the same one for every node holding this key. Copy the key somewhere safe: every node of the fleet needs it, the board on your phone too (<b>Fleet &gt; Board &gt; Mesh &gt; Fleet key</b>).';
+      });
+    }
+    $('meshKey').addEventListener('input', keyChanged);
+    $('keyGen').addEventListener('click', function () {
+      var cur = $('meshKey').value.trim();
+      if (cur && !confirm('Replace the key in the box with a new one? Nodes already on the current key will not talk to nodes on the new one.')) return;
+      $('meshKey').value = genKey(32);
+      keyChanged();
+    });
+    $('keyCopy').addEventListener('click', function () {
+      var k = $('meshKey').value.trim();
+      var done = function (t) { $('keyCopy').textContent = t; setTimeout(function () { $('keyCopy').textContent = 'Copy'; }, 1800); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(k).then(function () { done('Copied'); }, function () { $('meshKey').select(); done('Ctrl+C'); });
+      } else {
+        $('meshKey').select();
+        done('Ctrl+C');
+      }
+    });
+
+    // the serial log, with the key masked
+    var secret = '';
+    function log(dir, line) {
+      if (secret) line = line.split(secret).join('********');
+      var pre = $('meshLog');
+      pre.textContent += (dir ? dir + ' ' : '   ') + line + '\n';
+      if (pre.textContent.length > 60000) pre.textContent = pre.textContent.slice(-40000);
+      pre.scrollTop = pre.scrollHeight;
+    }
+    function status(cls, html) {
+      var s = $('meshStat');
+      s.className = 'meshstat show ' + cls;
+      s.innerHTML = html;
+    }
+
+    // a line at a time to and from the node
+    function Link(port) { this.port = port; this.waiters = []; this.buf = ''; this.closed = false; }
+    Link.prototype.open = async function () {
+      await this.port.open({ baudRate: 115200 });
+      this.writer = this.port.writable.getWriter();
+      this.reader = this.port.readable.getReader();
+      this.pump();
+    };
+    Link.prototype.pump = async function () {
+      var dec = new TextDecoder();
+      try {
+        for (;;) {
+          var r = await this.reader.read();
+          if (r.done) break;
+          this.buf += dec.decode(r.value, { stream: true });
+          var i;
+          while ((i = this.buf.indexOf('\n')) >= 0) {
+            var line = this.buf.slice(0, i).replace(/\r$/, '');
+            this.buf = this.buf.slice(i + 1);
+            if (line.trim()) this.onLine(line);
+          }
+        }
+      } catch (e) {
+        // a node restarting drops off USB: expected at the end
+      }
+      this.closed = true;
+      this.waiters.splice(0).forEach(function (w) { w.done(null); });
+    };
+    Link.prototype.onLine = function (line) {
+      if (!/^TLM /.test(line)) log('<', line);   // the node's telemetry every 5 s would bury the log
+      this.waiters.slice().forEach(function (w) { if (w.re.test(line)) w.done(line); });
+    };
+    // the first line matching re, or null on timeout or a closed port
+    Link.prototype.expect = function (re, ms) {
+      var self = this;
+      return new Promise(function (resolve) {
+        var w = { re: re };
+        w.done = function (line) {
+          clearTimeout(w.t);
+          var i = self.waiters.indexOf(w);
+          if (i >= 0) self.waiters.splice(i, 1);
+          resolve(line);
+        };
+        w.t = setTimeout(function () { w.done(null); }, ms);
+        if (self.closed) return w.done(null);
+        self.waiters.push(w);
+      });
+    };
+    Link.prototype.send = async function (line) {
+      log('>', line);
+      await this.writer.write(enc.encode(line + '\n'));
+    };
+    // a command and its OK / ERR answer (null: none)
+    Link.prototype.cmd = async function (line, okRe, ms) {
+      var p = this.expect(new RegExp(okRe.source + '|^ERR'), ms || 3000);
+      await this.send(line);
+      return p;
+    };
+    Link.prototype.close = async function () {
+      try { await this.reader.cancel(); } catch (e) {}
+      try { this.reader.releaseLock(); } catch (e) {}
+      try { this.writer.releaseLock(); } catch (e) {}
+      try { await this.port.close(); } catch (e) {}
+    };
+
+    async function nodeStatus(link) {
+      var line = await link.cmd('status', /^RST \{/, 2500);
+      if (!line || line.indexOf('RST ') !== 0) return null;
+      try { return JSON.parse(line.slice(4)); } catch (e) { return null; }
+    }
+
+    var busy = false;
+    $('meshGo').addEventListener('click', async function () {
+      if (busy) return;
+      var key = $('meshKey').value.trim();
+      var bad = keyProblem(key);
+      if (bad) { status('err', bad); $('meshKey').focus(); return; }
+      var alias = $('meshAlias').value.trim().replace(/\s+/g, ' ');
+      var badAlias = aliasProblem(alias);
+      if (badAlias) { status('err', badAlias); $('meshAlias').focus(); return; }
+      var ch = +$('meshCh').value;
+      var buzzer = $('optBuzzer').checked ? 1 : 0, led = $('optLed').checked ? 1 : 0;
+      var lock = $('optLock').checked;
+      var fw = document.body.getAttribute('data-fw');
+      var fp = await fingerprint(key);
+
+      var port;
+      try {
+        port = await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x303a }] });
+      } catch (e) {
+        return;   // the port list was closed
+      }
+      busy = true;
+      $('meshGo').disabled = true;
+      secret = key;
+      $('meshLog').textContent = '';
+      var link = new Link(port);
+      try {
+        status('busy', 'Connecting...');
+        try {
+          await link.open();
+        } catch (e) {
+          throw new Error("Couldn't open the port. Close the install dialog (and the app, if it is linked to this board over USB), then try again.");
+        }
+
+        status('busy', 'Reading the node...');
+        var st = await nodeStatus(link);
+        if (st && st.mode === 'scan') {
+          throw new Error('This node is ' + (st.locked ? 'locked in' : 'already in') + " the mesh, so it won't take a setup. " +
+            'Hold BOOT 1.5 s while you power it on, or install it again with Erase device ticked, then set it up again.');
+        }
+        if (st && st.filters > 0) log('', 'note: the node already has ' + st.filters + ' filter(s); setup leaves them as they are');
+
+        status('busy', 'Mesh: remote, channel ' + ch + '...');
+        var a = await link.cmd('mesh 1 remote ' + ch, /^OK mesh/);
+        if (!a) throw new Error("The node didn't answer. Set it up right after the install (or after plugging it in), with nothing else using its port. " +
+          'A board running the OUI SPY firmware for the app sets its mesh in the app instead: Fleet > Board > Mesh.');
+        if (!/^OK mesh on/.test(a)) throw new Error('The node refused the mesh settings: ' + esc(a));
+
+        // cleared first, so a node set up again also starts its command counters over
+        status('busy', 'The fleet key...');
+        a = await link.cmd('meshkey -', /^OK fleet key/);
+        if (!a || a.indexOf('ERR') === 0) throw new Error("The node didn't take the key: " + esc(a || 'no answer'));
+        a = await link.cmd('meshkey ' + key, /^OK fleet key/);
+        if (!a || a.indexOf('ERR') === 0) throw new Error("The node didn't take the key: " + esc(a || 'no answer'));
+
+        a = await link.cmd('audio ' + buzzer + ' ' + led, /^OK audio/);
+        if (!(a && a.indexOf('OK') === 0) && !(buzzer && led)) log('', 'note: this firmware has no audio command; its buzzer and LED stay as they were');
+
+        var aliasNote = '';
+        if (alias) {
+          a = await link.cmd('nodealias ' + alias, /^OK nodealias/);
+          if (!a || a.indexOf('OK') !== 0) {
+            aliasNote = ' This firmware keeps no name: rename it in the app instead (Fleet, tap the node, Rename).';
+            log('', 'note: no nodealias command on this firmware; the name was not stored');
+          }
+        }
+
+        var v = await nodeStatus(link);
+        if (v) {
+          if (alias && !aliasNote && 'alias' in v && v.alias !== alias) throw new Error('Name check failed: the node reports "' + esc(v.alias) + '". Set it up again.');
+          if (v.kfp && v.kfp !== fp) throw new Error('Key check failed: the node reports fingerprint ' + fpText(v.kfp) + ', expected ' + fpText(fp) + '. Set it up again.');
+          if (v.role !== 'remote' || v.ch !== ch) throw new Error('Check failed: the node reports ' + esc(v.role) + ' on channel ' + esc(v.ch) + '. Set it up again.');
+        }
+
+        status('busy', lock ? 'Locking...' : 'Starting the mesh...');
+        a = await link.cmd(lock ? 'burnin' : 'provisiondone', /^OK/, 4000);
+        var summary = (alias && !aliasNote ? '<b>' + esc(alias) + '</b>, ' : '') + 'remote on channel <b>' + ch + '</b>, key <b>' + fpText(fp) + '</b>';
+        if (a && a.indexOf('OK') === 0) {
+          status('ok', 'Remote node ready: ' + summary + '. ' +
+            (lock ? 'It is restarting into the mesh, and starts in it after every power cut. '
+                  : 'It is on the mesh now; after a power cut it starts in setup mode again (not locked). ') +
+            'Unplug it and put it where it should watch: the app lists it under Fleet once it hears it.' +
+            (fw === 'detector' ? ' Send it what to watch for from the app: Devices > Detect > Signatures > Install on nodes.' : '') + aliasNote);
+        } else if (a && /no filters/i.test(a)) {
+          var built = v && v.fw ? ' This node runs firmware built <b>' + esc(v.fw) + '</b>, an older release: install it again with the button above, then set it up again.' : '';
+          status('warn', 'Partly done: ' + summary + '. The mesh settings and the key are saved, but this firmware only joins the mesh with a filter installed.' + built + aliasNote);
+        } else {
+          throw new Error("The node didn't confirm: " + esc(a || 'no answer') + '. Its mesh settings and key are saved: set it up again to finish.');
+        }
+      } catch (e) {
+        status('err', (e && e.message) || String(e));
+      } finally {
+        await link.close();
+        secret = '';
+        busy = false;
+        $('meshGo').disabled = false;
+      }
+    });
+  })();
+</script>
+
+<!-- ESP Web Tools 10.4.0: every file it can load is pinned by its hash (README.md says how to update) -->
+<script type="importmap">
+{
+  "integrity": {
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/esp32-DNPRK0Ay.js": "sha384-1mT/sUZ9QQrZft8TM1YK7RfyIUggyewqL0w7GrOvQ0aHk1JPIsMsmZeUKcWGWX3G",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/esp32c2-CQ3ns5Nm.js": "sha384-AcOQBXWICST0TTlwGYbYA8cElKuXwrwW0L10NSF0YBe1PkndGs5RhsuDzTR/OZhi",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/esp32c3-2tchr35W.js": "sha384-JF+4Kgy21HYqVI0DI+S5SAUyxRrWHKN/yvQ2TzxFzvi3V4IzoyW0WXPscyrzIjwE",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/esp32c5-CeCSizBL.js": "sha384-LWYGviHcz1q8xMq+rBhgcOPSu9V6bB8VO5BMCIeTNIsIUtdzs2FCsTip6Tk37b1f",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/esp32c6-DolpfL0e.js": "sha384-IGupIjC1Vbm+EvBSu+rNvcYGQxssjhOw2APdj4cIGAdevBe86rTUYaO21v8RNywO",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/esp32c61-C8HktcOt.js": "sha384-ufZuP5/DSChHLVHLQ7MYes8HllWFxgbwL5y4C5gi9OXhaYHvdF6KEMOpv+iY/JeE",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/esp32h2-L0n5WuSo.js": "sha384-RU6vJZEaAJLviiv0938vlTobFJZHLEXoIG++VEHufT8z4evp3AeasaMzTemz2DMr",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/esp32p4-MR0ikcda.js": "sha384-xBu/wvVzwGAyBFMKgxeER3FJpFRbEy9ibHOmTdVa/k2B4khQPRq3pfmGZQYRCGpX",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/esp32s2-w9SUkb7o.js": "sha384-NNkQOYG+wsZHOXo+Yam3d6ks8/Bai0cN9MKjMU6U1PaxHjdOJC5ZqhDZcnQ2nL/N",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/esp32s3-DQt_R3ZE.js": "sha384-IcqNvrgnrdlIMX/N8Fb2+T/TGyZHbVAqp8iyoP9cH/E+VSlV6h3Uug3ykbyr1We6",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/index-Dt9w-IG1.js": "sha384-qDnmUz4Vrcy5l9ZV4nrPjsyYSeFTtX4OJNYJEEeZixp894cbdDwh+jeO/d//X/6I",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/install-dialog-im156JnI.js": "sha384-wMJi9BXikLp2SPdWr7OYNwSRpoiEgrPRT3APdi1KY6iYiMRoYO8vD5vBrBScG5j+",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/stub_flasher_32-BLbsWvxO.js": "sha384-NwVOvN4wk0BwWgOx1vGDv+MQEVpiXoaexYjJg/MDYH4rXwzOFpTiPC4Ga+GHl1Z+",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/stub_flasher_32c2-wLQhZItC.js": "sha384-kWdvhLR37pGIIpanPvPbGanK2DxuRVrb0Dx4tOYWcL2SpD3OGuC04mKxDgKLF9nT",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/stub_flasher_32c3-DmSvHQKL.js": "sha384-CXQHSBDY3+uIPzPcDoj56lAdidofn2R9+kcq6RkXjgVSM/6ZizTnZY4/AJ0tUODp",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/stub_flasher_32c5-D1WK4DyB.js": "sha384-3RLmDq3JDolM+Vvwua7Kb5r99y3mw9ptmdAuGKoiXuiQWuSLfAqTtSDO0zryPZm2",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/stub_flasher_32c6-ZuxjUVr4.js": "sha384-195M9duTV1A72oX1BdPqPyF0KufvSvbkTOXlVLYg0eZSdx6DCcGwL38RSMxvsU3j",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/stub_flasher_32c61-DeKkw9vN.js": "sha384-ocwIY7vRGNYbB3pDHtXRXo9e1wPmTmJKEkN+xGCwIDSxrAcMxnqTeyzcfqYmC99I",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/stub_flasher_32h2-CZ4EIL3w.js": "sha384-Whdgv4c66UKEmSqtqwBnxgw56V2kaJd4NQ8gpghwzEuXDotvVxaDzcKQNyacCgNZ",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/stub_flasher_32p4-CpHBYEwI.js": "sha384-Ugb2U81Kg2CAS1mQ6avdnzyJ0c7ux8Qmyivx2E7RXmu1bFVZxk8JUENABFAX/YYU",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/stub_flasher_32p4rc1-DyGqUAeZ.js": "sha384-obLWbHzQko//5KcdaalAr28oxQcTdbFPIxFr56WrxPPhkCJiDF6mlwnYCtiYHNtz",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/stub_flasher_32s2-CrsP1231.js": "sha384-QKrtaJgMb+aG+s5+Kp6hO/mnIOYkYniXOuViJGg5flhCGHb4EEaeASBikr5hnhLp",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/stub_flasher_32s3-CiJyd6Fk.js": "sha384-RW8irjkoLiZ6a4u+YbIjMSDqrFlM01oByNK52WD4te9CvRiEh9+631+aOtT9w8uh",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/stub_flasher_8266-CQFcqJ_a.js": "sha384-xPe4ucyto336SN2lbHdv4M0V1RV8+oLpWoYiht75/O/r6N8sOYvIPbGne54oKxla",
+    "https://unpkg.com/esp-web-tools@10.4.0/dist/web/styles-sT2V1cOw.js": "sha384-77x+BOw+Zw9kRRNMOF4W5I/luoc5EGHclPXlMwdlEpdWjh2qItAMrOMlzLJzVO9y"
+  }
+}
+</script>
+<script type="module" src="https://unpkg.com/esp-web-tools@10.4.0/dist/web/install-button.js" integrity="sha384-9XfyvAabgkISlB/Xb3OpshGKpZx0TOt5Mmu78SeiNU3so/p4o2s9m66vy6Utdnom" crossorigin="anonymous"></script>
 </body>
 </html>

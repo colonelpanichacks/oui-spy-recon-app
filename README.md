@@ -10,7 +10,7 @@
 <p align="center">
   <a href="https://github.com/colonelpanichacks/oui-spy-recon-app/releases/latest"><b>Download</b></a>
   &nbsp;&middot;&nbsp;
-  <a href="https://colonelpanichacks.github.io/oui-spy-unified-blue/"><b>Flash an OUI SPY</b></a>
+  <a href="https://colonelpanichacks.github.io/oui-spy-recon-app/flasher/"><b>Flash an OUI SPY</b></a>
   &nbsp;&middot;&nbsp;
   <a href="#features"><b>Features</b></a>
   &nbsp;&middot;&nbsp;
@@ -26,7 +26,7 @@
 ## Get started
 
 1. **Install the app.** Download it for your Android phone or your Mac from [Releases](https://github.com/colonelpanichacks/oui-spy-recon-app/releases/latest).
-2. **Flash your OUI SPY.** Open the [OUI SPY web flasher](https://colonelpanichacks.github.io/oui-spy-unified-blue/) in Chrome or Edge on a computer and keep **OUI SPY for the app** picked. Plug the board in with a USB-C data cable, click **Connect**, pick its port, then install it. Later builds come from the app, over Bluetooth, USB or the mesh.
+2. **Flash your OUI SPY.** Open the [OUI SPY web flasher](https://colonelpanichacks.github.io/oui-spy-recon-app/flasher/) in Chrome or Edge on a computer and keep **OUI SPY for the app** picked. Plug the board in with a USB-C data cable, click **Connect**, pick its port, then install it. Later builds come from the app, over Bluetooth, USB or the mesh.
 3. **Connect.** Open the app, go to **Settings > Connections**, switch on **Board over Bluetooth** and tap it to pick your board. The first time, it asks for the board's PIN: **123456** on a new OUI SPY (change it with `blepin` in the app's Console while the board is on USB).
 4. **Keep it current.** New firmware for your board comes with the app: install it from the app's **Firmware** page. The app looks here for its own updates, and you install one from **Settings**.
 5. **Grow a fleet (optional).** Boards you leave out on their own report to yours over the mesh: on the same flasher pick **Detector**, **Sky-Spy** or **Wardriver**, install it, and the page puts it on your fleet's mesh over the same cable. See [Remote nodes](#remote-nodes).
@@ -390,7 +390,7 @@ The screens below run a fleet from one phone: every node's status, rules and fir
 
 #### Remote nodes
 
-A remote node is an OUI SPY with no phone of its own: you leave it where it should watch, and it reports over the mesh to the board on your phone. The [web flasher](https://colonelpanichacks.github.io/oui-spy-unified-blue/) installs one and puts it on your fleet's mesh over the same USB cable.
+A remote node is an OUI SPY with no phone of its own: you leave it where it should watch, and it reports over the mesh to the board on your phone. The [web flasher](https://colonelpanichacks.github.io/oui-spy-recon-app/flasher/) installs one and puts it on your fleet's mesh over the same USB cable.
 
 1. **The board on your phone.** Install **OUI SPY for the app** and pair it. In the app, **Fleet > Board > Mesh**: type a fleet key (8 to 63 characters, no spaces) and switch the mesh on. Then make it the home: **Fleet > Control > Home node**.
 2. **Each remote node.** On the flasher, pick its job: **Detector** (watches for the device signatures you send it), **Sky-Spy** (drone Remote ID) or **Wardriver** (every Wi-Fi network and Bluetooth device it hears). Install it, then set it up on the page: the same channel and fleet key, a name, and a lock so it starts in the mesh after every power cut. The page can generate a key, and shows its fingerprint: the same one the app shows for every node holding it.
@@ -462,7 +462,7 @@ Triangulation on: the Axon body camera placed at its fix from the three OUI SPY 
 
 ### Firmware
 
-The app carries the firmware for your OUI SPY boards and updates them over Bluetooth, USB or the mesh, one node at a time, checking each image before it is sent. A new board's first install is done with the [web flasher](https://colonelpanichacks.github.io/oui-spy-unified-blue/).
+The app carries the firmware for your OUI SPY boards and updates them over Bluetooth, USB or the mesh, one node at a time, checking each image before it is sent. A new board's first install is done with the [web flasher](https://colonelpanichacks.github.io/oui-spy-recon-app/flasher/).
 
 #### Firmware over the mesh
 
