@@ -22,16 +22,16 @@ ESP32-S3, 8 MB flash) over USB.
 
 All paths in the page and the manifest are relative, so the folder works under any URL.
 
-## Parts (build Nov 24 2026)
+## Parts (build Nov 25 2026)
 
 | Offset | File | Bytes | sha256 |
 |---|---|---|---|
 | `0x0` | `bootloader.bin` | 15,104 | `1776e4dd896a69d0a5c2e79957b0e2a88aa4129b1381d6478683515a1f6af343` |
 | `0x8000` | `partitions.bin` | 3,072 | `1d9cca96de0fe07ad7fc0648b9878ddecd9ce565e38b589ad20fea698ed4c80c` |
 | `0xe000` | `boot_app0.bin` | 8,192 | `f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0` |
-| `0x10000` | `ouispyblue.bin` | 1,662,464 | `d5e7abf0cfcfa7bf1ef0ef5edd56d1b44559aa053fa9f54075c594c1ab73142e` |
+| `0x10000` | `ouispyblue.bin` | 1,662,976 | `90242c0ee8b85d7a7b5afb44d255b77eef229511e6612e46bd27a5a8044f2225` |
 
-The firmware is build `Nov 24 2026 18:57:23`. The remote nodes write the same first three
+The firmware is build `Nov 25 2026 09:00:26`. The remote nodes write the same first three
 parts, then their own image at `0x10000`:
 
 | Node | File | Build | Bytes | sha256 |
