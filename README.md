@@ -646,13 +646,14 @@ To check the APK's signing certificate:
 
 Thanks and a shout-out to:
 
-- **DeFlock Joplin**, for the wildcard probe-request detection research.
-- **NitekryDPaul**, for the many OUI submissions: [nite-oui-collection](https://github.com/nitekry/nite-oui-collection).
-- **[WiGLE](https://wigle.net)**, the wardriving database the app uploads to.
-- **cybertiger** at the [EFF](https://www.eff.org).
-- **Joe "The Mayor" Helle**, for help with the Android app.
+- **[WiGLE](https://wigle.net)**, the wardriving database the app uploads to. [Mastodon](https://defcon.social/@WiGLEnet) · [GitHub](https://github.com/wiglenet)
+- **NitekryDPaul**, for the many OUI submissions: [nite-oui-collection](https://github.com/nitekry/nite-oui-collection). [X](https://x.com/NitekryDPaul) · [GitHub](https://github.com/nitekry)
+- **cybertiger** at the [EFF](https://www.eff.org). [Bluesky](https://bsky.app/profile/cooperq.com) · [GitHub](https://github.com/cooperq)
+- **DeFlock Joplin**, for the wildcard probe-request detection research. [deflockjoplin.today](https://deflockjoplin.today) · [Bluesky](https://bsky.app/profile/deflockjoplin.bsky.social)
+- **Joe "The Mayor" Helle**, for help with the Android app. [X](https://x.com/joehelle) · [GitHub](https://github.com/dievus)
+- **Konrad Iturbe** (KonradIT), for the C5VRX link mode the Recon's FPV video runs on. [konraditurbe.dev](https://konraditurbe.dev) · [Bluesky](https://bsky.app/profile/konraditurbe.dev) · [GitHub](https://github.com/KonradIT)
 
-Shout-outs to **the wrew**, **dz_az** and **h4d35x0**.
+Shout-outs to **the wrew** ([Mastodon](https://masto.hackers.town/@Wrewdison) · [wrewtopia.com](https://wrewtopia.com)), **dz_az** and **h4d35x0** ([GitHub](https://github.com/h4d35x0) · [h4d35x0.com](https://h4d35x0.com)).
 
 ## License
 
