@@ -29,9 +29,9 @@ All paths in the page and the manifest are relative, so the folder works under a
 | `0x0` | `bootloader.bin` | 15,104 | `1776e4dd896a69d0a5c2e79957b0e2a88aa4129b1381d6478683515a1f6af343` |
 | `0x8000` | `partitions.bin` | 3,072 | `1d9cca96de0fe07ad7fc0648b9878ddecd9ce565e38b589ad20fea698ed4c80c` |
 | `0xe000` | `boot_app0.bin` | 8,192 | `f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0` |
-| `0x10000` | `ouispyblue.bin` | 1,662,976 | `90242c0ee8b85d7a7b5afb44d255b77eef229511e6612e46bd27a5a8044f2225` |
+| `0x10000` | `ouispyblue.bin` | 1,663,760 | `0aa80828079e66f22bd79cac5e0709b11af8bcc4050b344d3bd35fb5f795f5ab` |
 
-The firmware is build `Nov 25 2026 09:00:26`. The remote nodes write the same first three
+The firmware is build `Nov 25 2026 23:51:31`. The remote nodes write the same first three
 parts, then their own image at `0x10000`:
 
 | Node | File | Build | Bytes | sha256 |

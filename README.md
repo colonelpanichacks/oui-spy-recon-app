@@ -503,7 +503,7 @@ Alerts and sounds, the map, Remote ID lookups, exports to CSV, JSON, KML and KMZ
 How alerts reach you on this phone, the home dashboard's connectors, and the map's settings.
 
 <img src="img/walkthrough/32-settings-alerts.png" width="300" align="left" alt="Settings: alerts and the map">
-<table><tr><td width="340" valign="top"><ol><li><b>Notifications</b>: A notification for each alert.</li><li><b>Vibrate</b>: A buzz on an alert.</li><li><b>Sound</b>: Which events sound, and how loud.</li><li><b>Silence everything</b>: No sound, buzz, banner or notification, until you switch it off or the app restarts.</li><li><b>Connectors</b>: Sharing with ATAK on this phone (the OUI-SPY plugin or plain CoT); with the home dashboard connected, also its MQTT, TAK and Reticulum links and how long it keeps history.</li><li><b>Map layer</b>: The map&#x27;s base layer.</li><li><b>Your icon</b>: You and your Recon on the maps.</li></ol></td></tr></table>
+<table><tr><td width="340" valign="top"><ol><li><b>Notifications</b>: A notification for each alert.</li><li><b>Vibrate</b>: A buzz on an alert.</li><li><b>Sound</b>: Which events sound, and how loud.</li><li><b>Silence everything</b>: No sound, buzz, banner or notification, until you switch it off or the app restarts.</li><li><b>Connectors</b>: Sharing with ATAK on this phone, as CoT that any ATAK reads, the Play Store's too; with the home dashboard connected, also its MQTT, TAK and Reticulum links and how long it keeps history.</li><li><b>Map layer</b>: The map&#x27;s base layer.</li><li><b>Your icon</b>: You and your Recon on the maps.</li></ol></td></tr></table>
 <br clear="left">
 
 #### Export
