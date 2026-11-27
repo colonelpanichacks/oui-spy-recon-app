@@ -662,7 +662,7 @@ Thanks and a shout-out to:
 - **Joe "The Mayor" Helle**, for help with the Android app. [X](https://x.com/joehelle) · [GitHub](https://github.com/dievus)
 - **Konrad Iturbe** (KonradIT), for the C5VRX link mode the Recon's FPV video runs on. [konraditurbe.dev](https://konraditurbe.dev) · [Bluesky](https://bsky.app/profile/konraditurbe.dev) · [GitHub](https://github.com/KonradIT)
 
-Shout-outs to **the wrew** ([Mastodon](https://masto.hackers.town/@Wrewdison) · [wrewtopia.com](https://wrewtopia.com)), **dz_az** and **h4d35x0** ([GitHub](https://github.com/h4d35x0) · [h4d35x0.com](https://h4d35x0.com)).
+Shout-outs to **the wrew** ([Mastodon](https://masto.hackers.town/@Wrewdison) · [wrewtopia.com](https://wrewtopia.com)), **dz_az**, **h4d35x0** ([GitHub](https://github.com/h4d35x0) · [h4d35x0.com](https://h4d35x0.com)) and **Luke Switzer** ([GitHub](https://github.com/lukeswitz) · [rootdowndigital.com](https://rootdowndigital.com)).
 
 ## License
 
