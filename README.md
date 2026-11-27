@@ -45,6 +45,7 @@
 - **Device pages.** Name a device, group it, keep notes, watch it, mute its alerts, hunt it and export it. A drone's page also tags it friendly, neutral, suspicious or hostile, shows it on the map and follows it.
 - **Triangulation.** Three boards placed on the map that hear the same device put it on the map.
 - **The mesh.** Run several boards on a long-range mesh and see the whole fleet from one phone. Remote nodes (Detector, Sky-Spy, Wardriver) install and join it straight from the web flasher, and firmware updates travel over the mesh too.
+- **Home Assistant.** What your boards detect, as Home Assistant entities its automations act on: an event for each detection, drone and FPV find, and sensors for an alert, a tracker, a drone or FPV video nearby. It goes over MQTT with Home Assistant's discovery, from the phone or the Mac, and is off until you switch it on. Positions go only if you allow them, and the wardrive never goes.
 - **Firmware.** The app carries the firmware for your OUI SPY boards and updates them over Bluetooth, USB or the mesh. A new board's first install is done with the web flasher.
 - **On the desktop.** The same app on macOS. Linux is coming.
 
@@ -496,14 +497,22 @@ An OUI SPY on the phone's USB, updating its own firmware: a new build goes over 
 
 ### Settings, exports and updates
 
-Alerts and sounds, the map, Remote ID lookups, exports to CSV, JSON, KML and KMZ, and updates: the app looks on GitHub for a newer signed release and offers to install it.
+ATAK and Home Assistant, alerts and sounds, the map, Remote ID lookups, exports to CSV, JSON, KML and KMZ, and updates: the app looks on GitHub for a newer signed release and offers to install it.
+
+#### Settings: ATAK and Home Assistant
+
+The connectors on the phone, in Settings itself: each with its switch and state in place, and what it shares unfolding under it while it is on. Under them, the home dashboard's address.
+
+<img src="img/walkthrough/34-settings-connectors.png" width="300" align="left" alt="Settings: ATAK and Home Assistant">
+<table><tr><td width="340" valign="top"><ol><li><b>ATAK</b>: The mesh on ATAK&#x27;s map on this phone, as plain CoT that any ATAK reads, the Play Store&#x27;s too. What it shares and where it goes unfold under it while it is on.</li><li><b>ATAK apps</b>: The ATAK apps on this phone; none here.</li><li><b>Home Assistant</b>: Detections, drones and FPV video as Home Assistant entities, over MQTT with its discovery. While it is on, its broker, what it sends and whether positions go unfold under it.</li><li><b>What it makes</b>: An event for each detection, drone and FPV find, and sensors for an alert, a tracker, a drone or FPV video nearby, all under one device. Positions go only if you allow them, and the wardrive never goes.</li><li><b>Home dashboard</b>: Where the optional home dashboard is: left blank, it is found on this network; over Tailscale or any other network it needs the dashboard&#x27;s access token.</li></ol></td></tr></table>
+<br clear="left">
 
 #### Settings: alerts and the map
 
 How alerts reach you on this phone, the home dashboard's connectors, and the map's settings.
 
 <img src="img/walkthrough/32-settings-alerts.png" width="300" align="left" alt="Settings: alerts and the map">
-<table><tr><td width="340" valign="top"><ol><li><b>Notifications</b>: A notification for each alert.</li><li><b>Vibrate</b>: A buzz on an alert.</li><li><b>Sound</b>: Which events sound, and how loud.</li><li><b>Silence everything</b>: No sound, buzz, banner or notification, until you switch it off or the app restarts.</li><li><b>Connectors</b>: Sharing with ATAK on this phone, as CoT that any ATAK reads, the Play Store's too; with the home dashboard connected, also its MQTT, TAK and Reticulum links and how long it keeps history.</li><li><b>Map layer</b>: The map&#x27;s base layer.</li><li><b>Your icon</b>: You and your Recon on the maps.</li></ol></td></tr></table>
+<table><tr><td width="340" valign="top"><ol><li><b>Notifications</b>: A notification for each alert.</li><li><b>Vibrate</b>: A buzz on an alert.</li><li><b>Sound</b>: Which events sound, and how loud.</li><li><b>Silence everything</b>: No sound, buzz, banner or notification, until you switch it off or the app restarts.</li><li><b>Dashboard connectors</b>: The home dashboard&#x27;s Meshtastic, MQTT, TAK server and Reticulum links, and how long it keeps history, here while the phone works through the dashboard.</li><li><b>Map layer</b>: The map&#x27;s base layer.</li><li><b>Your icon</b>: You and your Recon on the maps.</li></ol></td></tr></table>
 <br clear="left">
 
 #### Export
